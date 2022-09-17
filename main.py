@@ -9,7 +9,7 @@ from bs4 import BeautifulSoup
 
 from datetime import datetime
 from datetime import timedelta
-from datetime import timezone
+# from datetime import timezone
 
 from khl.card import CardMessage, Card, Module, Element, Types, Struct
 
