@@ -1,4 +1,4 @@
-from khl import Bot, Message, EventTypes, Event
+from khl import Bot, Message
 from keep_alive import keep_alive
 import os
 import time
@@ -58,7 +58,7 @@ def set_card(text):
         if (item['promotions'] == None):
             continue
         # 促销优惠
-        if (len(item['promotions']['promotionalOffers'])):
+        if (len(item['promotions']['promotionalOffers'])) and (item['price']['totalPrice']['discountPrice'] == 0):
             # promotionalOffers.append({
             #   "title": item['title'],
             #   "img": item['keyImages'][0]['url'],
@@ -84,10 +84,14 @@ def set_card(text):
                                   Types.Size.SM),
                     Types.SectionMode.RIGHT))
             c1.append(Module.Countdown(end_time, mode=Types.CountdownMode.DAY))
+            # print(item['catalogNs']['mappings'][0]['pageSlug'])
+            productSlug = item['productSlug'] if item[
+                'productSlug'] != None else item['catalogNs']['mappings'][0][
+                    'pageSlug']
             c1.append(
                 Module.Section(
                     "",
-                    Element.Button('前往领取', jump_first + item['urlSlug'],
+                    Element.Button('前往领取', jump_first + productSlug,
                                    Types.Click.LINK)))
             c1.append(Module.Divider())
         # 即将到来的促销优惠
