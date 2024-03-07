@@ -1,48 +1,35 @@
-from khl import Bot, Message
-from khl.command import Command
-from khl import HTTPRequester
-
-from keep_alive import keep_alive
-import os
-
-from epic import epicCard
-
-# init Bot
-token = os.environ['KOOK_oldK']
-bot = Bot(token)
+import json
+from test import world
+from khl import Message,Bot,Cert
 
 
-# register command, send `/hello` in channel to invoke
+def open_file(path: str):
+    """打开path对应的json文件"""
+    with open(path, 'r', encoding='utf-8') as f:
+        tmp = json.load(f)
+    return tmp
+
+
+# 打开config.json
+config = open_file('./config/config.json')
+
+# 初始化机器人
+bot = Bot(token=config['token'])  # 默认采用 websocket
+"""main bot"""
+if not config['using_ws']:  # webhook
+    # 当配置文件中'using_ws'键值为false时，代表不使用websocket
+    # 此时采用webhook方式初始化机器人
+    print(f"[BOT] using webhook at port {config['webhook_port']}")
+    bot = Bot(cert=Cert(token=config['token'],
+                        verify_token=config['verify_token'],
+                        encrypt_key=config['encrypt_token']),
+                        port=config['webhook_port'])
+
+
+# 注册命令
 @bot.command(name='hello')
-async def world(msg: Message):
-    await msg.reply('我是人气最旺探员-老K!')
+async def world_cmd(msg: Message):
+    await world(msg)
 
-
-# 嗦牛子代码
-def snz(msg: Message) -> bool:
-    return msg.content.find('嗦牛子') != -1
-
-
-@bot.command(rules=[snz])
-async def 嗦牛子(msg: Message, comment: str):
-    await msg.reply(f'{comment}太小了! 根本看不到')
-
-
-# 获取epic免费游戏 发送卡片
-@bot.command()
-async def epic(msg: Message):
-    await msg.ctx.channel.send(epicCard())
-
-
-# 捕获epic指令接口报错
-@epic.on_exception(HTTPRequester.APIRequestFailed)
-async def on_epic_exc(cmd: Command, exc: HTTPRequester.APIRequestFailed,
-                      msg: Message):
-    await msg.reply(f'err {exc} raised during handling {cmd.name}')
-
-
-# everything done, go ahead now!
-keep_alive()
+# 启动机器人
 bot.run()
-# now invite the bot to a server, and send '/hello' in any channel
-# (remember to grant the bot with read & send permissions)
