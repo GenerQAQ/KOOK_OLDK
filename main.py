@@ -1,6 +1,6 @@
 import json
-from test import world
 from khl import Message,Bot,Cert
+from test import update_epic_data
 
 
 def open_file(path: str):
@@ -25,11 +25,10 @@ if not config['using_ws']:  # webhook
                         encrypt_key=config['encrypt_token']),
                         port=config['webhook_port'])
 
-
-# 注册命令
-@bot.command(name='hello')
-async def world_cmd(msg: Message):
-    await world(msg)
+# 启动前执行
+@bot.on_startup
+async def bot_start_task(bot: Bot):
+    await update_epic_data()
 
 # 启动机器人
 bot.run()
