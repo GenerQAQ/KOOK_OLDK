@@ -1,23 +1,23 @@
-# test.py
+# epic.py
 import requests
 import json
 from datetime import datetime, timedelta
 from khl import Message
 
-global_epic = []
+global_epic_data = []
 
 global_epic_jump_first = 'https://store.epicgames.com/zh-CN/p/'
 
-async def update_epic_data():
+def update_epic_data():
     """更新epic数据到全局变量"""
-    global global_epic
+    global global_epic_data
     url = 'https://store-site-backend-static-ipv4.ak.epicgames.com/freeGamesPromotions?locale=zh-CN&country=CN&allowCountries=CN'
     html = requests.get(url=url)
     resp = json.loads(html.text)
     
     items = resp['data']['Catalog']['searchStore']['elements']
     
-    global_epic = []
+    global_epic_data = []
     now_frees = {
         'title': '现在免费',
         'games': []
@@ -57,5 +57,27 @@ async def update_epic_data():
             })
             continue
 
-    global_epic.append(now_frees)
-    global_epic.append(coming_frees)
+    global_epic_data.append(now_frees)
+    global_epic_data.append(coming_frees)
+
+def update_epic_card():
+    """更新epic卡片"""
+
+
+def add_channel_id(channel_id: str):
+    """添加频道ID至配置文件"""
+    with open('./config/channels.json', 'r') as f:
+        data = json.load(f)
+    if channel_id not in data['channels']:
+        data['channels'].append(channel_id)
+    with open('./config/channels.json', 'w') as f:
+        json.dump(data, f, indent=4)
+
+def remove_channel_id(channel_id: str):
+    """移除频道ID至配置文件"""
+    with open('./config/channels.json', 'r') as f:
+        data = json.load(f)
+    if channel_id in data['channels']:
+        data['channels'].remove(channel_id)
+    with open('./config/channels.json', 'w') as f:
+        json.dump(data, f, indent=4)
