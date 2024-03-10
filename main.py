@@ -82,4 +82,5 @@ async def stop_epic(msg:Message):
         await msg.reply("别私信我，我懒得理你")
 
 # 启动机器人
-bot.run()
+if __name__ == '__main__':
+    bot.run()
