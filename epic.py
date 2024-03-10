@@ -2,9 +2,12 @@
 import requests
 import json
 from datetime import datetime, timedelta
-from khl import Message
+from khl.card import CardMessage,Types,Card,Module,Element,Struct
+from khl import Bot
 
 global_epic_data = []
+
+global_epic_card = CardMessage()
 
 global_epic_jump_first = 'https://store.epicgames.com/zh-CN/p/'
 
@@ -20,10 +23,14 @@ def update_epic_data():
     global_epic_data = []
     now_frees = {
         'title': '现在免费',
+        'theme': Types.Theme.SUCCESS,
+        'size': Types.Size.LG,
         'games': []
     }
     coming_frees = {
         'title': '即将免费',
+        'theme': Types.Theme.INFO,
+        'size': Types.Size.LG,
         'games': []
     }
 
@@ -34,7 +41,7 @@ def update_epic_data():
         # 当前免费
         if (len(item['promotions']['promotionalOffers'])) and (item['price']['totalPrice']['discountPrice'] == 0):
             now_frees['games'].append({
-                'name': '🕹'+item['title'],
+                'name': item['title'],
                 'img': item['keyImages'][0]['url'],
                 'desc': item['description'],
                 'start_time': datetime.strptime(item['promotions']['promotionalOffers'][0]['promotionalOffers'][0]['startDate'], "%Y-%m-%dT%H:%M:%S.%fZ") + timedelta(hours=8),
@@ -47,7 +54,7 @@ def update_epic_data():
         # 即将推出
         if (len(item['promotions']['upcomingPromotionalOffers'])):
             coming_frees['games'].append({
-                'name': '🕹'+item['title'],
+                'name': item['title'],
                 'img': item['keyImages'][0]['url'],
                 'desc': item['description'],
                 'start_time': datetime.strptime(item['promotions']['upcomingPromotionalOffers'][0]['promotionalOffers'][0]['startDate'], "%Y-%m-%dT%H:%M:%S.%fZ") + timedelta(hours=8),
@@ -62,7 +69,43 @@ def update_epic_data():
 
 def update_epic_card():
     """更新epic卡片"""
+    global global_epic_card
+    global global_epic_data
 
+    if 0 == len(global_epic_data):
+        return
+
+    global_epic_card = CardMessage()
+    for item in global_epic_data:
+        if 0 == len(item['games']):
+            continue
+        games = []
+        for game in item['games']:
+            games.append(Module.Divider())
+            games.append(Module.Header(':joystick:' + game['name']))
+            games.append(Module.Section(Element.Text(game['desc'], Types.Text.KMD)))
+            games.append(Module.Section(
+                Struct.Paragraph(1, f'开始时间：{game["start_time"]}', f'结束时间：{game["end_time"]}', f'游戏类型：{game["type"]}'),
+                # LINK type: user will open the link in browser when clicked
+                Element.Image(game['img'], "", False, Types.Size.SM),
+                Types.SectionMode.RIGHT
+            ))
+            games.append(Module.Countdown(game['end_time'], mode=Types.CountdownMode.DAY))
+            games.append(Module.Section("", Element.Button('前往领取', game['link'], Types.Click.LINK)))
+        global_epic_card.append(
+            Card(
+                Module.Header(item['title']),
+                *games,
+                theme=item['theme'],
+                size=item['size'],
+            )
+        )
+
+async def send_channel(bot: Bot, channel_id: str):
+    """主动发送消息"""
+    global global_epic_card
+    ch = await bot.client.fetch_public_channel(channel_id)
+    await ch.send(global_epic_card)
 
 def add_channel_id(channel_id: str):
     """添加频道ID至配置文件"""

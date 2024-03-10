@@ -1,6 +1,6 @@
 import json
 from khl import Message,Bot,Cert,PublicMessage
-from epic import update_epic_data,add_channel_id,remove_channel_id
+from epic import update_epic_data,update_epic_card,add_channel_id,remove_channel_id,send_channel
 
 
 def open_file(path: str):
@@ -12,9 +12,6 @@ def open_file(path: str):
 
 # 打开config.json
 config = open_file('./config/config.json')
-
-# 定时发送消息的频道列表
-global_channel_ids: list = open_file('./config/channels.json')
 
 # 初始化机器人
 bot = Bot(token=config['token'])  # 默认采用 websocket
@@ -37,6 +34,18 @@ async def bot_start_task(bot: Bot):
 @bot.task.add_date(timezone='Asia/Shanghai')
 async def add_date_task():
     await bot.client.update_listening_music('耕叔的教诲', '谁让你点开看我的？', 'cloudmusic')
+    update_epic_card()
+
+
+# 添加定时发送消息的频道
+@bot.task.add_cron(day_of_week=4, hour=20, minute=0, timezone="Asia/Shanghai")
+async def auto_skin_notify_task():
+    # 定时发送消息的频道列表
+    channel_ids: list = open_file('./config/channels.json')
+
+    for channel_id in channel_ids:
+        await send_channel(bot, channel_id)
+
 
 # 添加定时发送消息的频道
 @bot.command(name='start_epic')
@@ -44,8 +53,13 @@ async def start_epic(msg:Message):
     """将用户发送的频道ID添加到定时发送消息的频道列表"""
     if isinstance(msg,PublicMessage):
         # 公共频道消息
+        channel_ids: list = open_file('./config/channels.json')
+        if msg.ctx.channel.id in channel_ids:
+            await msg.reply("该频道已经添加过了, 每周五20:00点会提醒各位老登")
+            return
         add_channel_id(msg.ctx.channel.id)
         await msg.reply("添加成功，/stop_epic取消")
+        await send_channel(bot,msg.ctx.channel.id)
     else:
         # 是私聊消息
         await msg.reply("别私信我，我懒得理你")
