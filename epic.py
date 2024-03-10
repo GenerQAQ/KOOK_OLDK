@@ -1,6 +1,7 @@
 # epic.py
 import requests
 import json
+import os
 from datetime import datetime, timedelta
 from khl.card import CardMessage,Types,Card,Module,Element,Struct
 from khl import Bot
@@ -109,18 +110,26 @@ async def send_channel(bot: Bot, channel_id: str):
 
 def add_channel_id(channel_id: str):
     """添加频道ID至配置文件"""
-    with open('./config/channels.json', 'r') as f:
+    # 获取当前脚本所在的目录路径
+    current_dir = os.path.dirname(__file__)
+    # 使用相对路径拼接文件路径
+    file_path = os.path.join(current_dir, './config/channels.json')
+    with open(file_path, 'r') as f:
         data = json.load(f)
     if channel_id not in data['channels']:
         data['channels'].append(channel_id)
-    with open('./config/channels.json', 'w') as f:
+    with open(file_path, 'w') as f:
         json.dump(data, f, indent=4)
 
 def remove_channel_id(channel_id: str):
     """移除频道ID至配置文件"""
-    with open('./config/channels.json', 'r') as f:
+    # 获取当前脚本所在的目录路径
+    current_dir = os.path.dirname(__file__)
+    # 使用相对路径拼接文件路径
+    file_path = os.path.join(current_dir, './config/channels.json')
+    with open(file_path, 'r') as f:
         data = json.load(f)
     if channel_id in data['channels']:
         data['channels'].remove(channel_id)
-    with open('./config/channels.json', 'w') as f:
+    with open(file_path, 'w') as f:
         json.dump(data, f, indent=4)

@@ -1,11 +1,16 @@
 import json
+import os
 from khl import Message,Bot,Cert,PublicMessage
 from epic import update_epic_data,update_epic_card,add_channel_id,remove_channel_id,send_channel
 
 
 def open_file(path: str):
     """打开path对应的json文件"""
-    with open(path, 'r', encoding='utf-8') as f:
+    # 获取当前脚本所在的目录路径
+    current_dir = os.path.dirname(__file__)
+    # 使用相对路径拼接文件路径
+    file_path = os.path.join(current_dir, path)
+    with open(file_path, 'r', encoding='utf-8') as f:
         tmp = json.load(f)
     return tmp
 
