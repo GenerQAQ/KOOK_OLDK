@@ -1,4 +1,4 @@
 khl.py
-json
+simplejson
 requests
 datetime
