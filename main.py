@@ -59,7 +59,7 @@ async def start_epic(msg:Message):
     if isinstance(msg,PublicMessage):
         # 公共频道消息
         channel_ids: list = open_file('./config/channels.json')
-        if msg.ctx.channel.id in channel_ids:
+        if msg.ctx.channel.id in channel_ids['channels']:
             await msg.reply("该频道已经添加过了, 每周五20:00点会提醒各位老登")
             return
         add_channel_id(msg.ctx.channel.id)
