@@ -48,6 +48,7 @@ def update_epic_data():
                 'start_time': datetime.strptime(item['promotions']['promotionalOffers'][0]['promotionalOffers'][0]['startDate'], "%Y-%m-%dT%H:%M:%S.%fZ") + timedelta(hours=8),
                 'end_time': datetime.strptime(item['promotions']['promotionalOffers'][0]['promotionalOffers'][0]['endDate'], "%Y-%m-%dT%H:%M:%S.%fZ") + timedelta(hours=8),
                 'type': item['offerType'],
+                'countdown': datetime.strptime(item['promotions']['promotionalOffers'][0]['promotionalOffers'][0]['endDate'], "%Y-%m-%dT%H:%M:%S.%fZ") + timedelta(hours=8),
                 'link': global_epic_jump_first + item['catalogNs']['mappings'][0]['pageSlug']
             })
             continue
@@ -61,6 +62,7 @@ def update_epic_data():
                 'start_time': datetime.strptime(item['promotions']['upcomingPromotionalOffers'][0]['promotionalOffers'][0]['startDate'], "%Y-%m-%dT%H:%M:%S.%fZ") + timedelta(hours=8),
                 'end_time': datetime.strptime(item['promotions']['upcomingPromotionalOffers'][0]['promotionalOffers'][0]['endDate'], "%Y-%m-%dT%H:%M:%S.%fZ") + timedelta(hours=8),
                 'type': item['offerType'],
+                'countdown': datetime.strptime(item['promotions']['upcomingPromotionalOffers'][0]['promotionalOffers'][0]['startDate'], "%Y-%m-%dT%H:%M:%S.%fZ") + timedelta(hours=8),
                 'link': global_epic_jump_first + item['catalogNs']['mappings'][0]['pageSlug']
             })
             continue
@@ -91,7 +93,7 @@ def update_epic_card():
                 Element.Image(game['img'], "", False, Types.Size.SM),
                 Types.SectionMode.RIGHT
             ))
-            games.append(Module.Countdown(game['end_time'], mode=Types.CountdownMode.DAY))
+            games.append(Module.Countdown(game['countdown'], mode=Types.CountdownMode.DAY))
             games.append(Module.Section("", Element.Button('前往领取', game['link'], Types.Click.LINK)))
         global_epic_card.append(
             Card(
