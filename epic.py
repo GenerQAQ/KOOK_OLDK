@@ -94,10 +94,10 @@ def update_epic_card():
                 Types.SectionMode.RIGHT
             ))
             if item['type'] == 'now':
-                games.append(Module.Section("剩余时间：", Module.Countdown(game['end_time'], mode=Types.CountdownMode.DAY)))
+                games.append(Module.Countdown(game['end_time'], mode=Types.CountdownMode.DAY))
                 games.append(Module.Section("", Element.Button('前往领取', game['link'], Types.Click.LINK)))
             if item['type'] == 'coming':
-                games.append(Module.Section("即将开始：", Module.Countdown(game['start_time'], mode=Types.CountdownMode.DAY)))
+                games.append(Module.Countdown(game['start_time'], mode=Types.CountdownMode.DAY))
         global_epic_card.append(
             Card(
                 Module.Header(item['title']),
