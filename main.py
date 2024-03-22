@@ -43,7 +43,7 @@ async def add_date_task():
 
 
 # 添加定时发送消息的频道
-@bot.task.add_cron(day_of_week=4, hour=20, minute=0, timezone="Asia/Shanghai")
+@bot.task.add_cron(hour=20, minute=0, timezone="Asia/Shanghai")
 async def auto_skin_notify_task():
     # 定时发送消息的频道列表
     channel_ids = open_file('./config/channels.json')
