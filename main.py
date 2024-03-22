@@ -81,6 +81,19 @@ async def stop_epic(msg:Message):
         # 是私聊消息
         await msg.reply("别私信我，我懒得理你")
 
+# 临时发送epic消息
+@bot.command(name='epic')
+async def epic(msg:Message):
+    """将用户发送的频道ID从定时发送消息的频道列表中移除"""
+    if isinstance(msg,PublicMessage):
+        # 公共频道消息
+        remove_channel_id(msg.ctx.channel.id)
+        await send_channel(bot,msg.ctx.channel.id)
+    else:
+        # 是私聊消息
+        await msg.reply("别私信我，我懒得理你")
+
+
 # 启动机器人
 if __name__ == '__main__':
     bot.run()
