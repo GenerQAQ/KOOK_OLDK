@@ -1,0 +1,7 @@
+{
+    "token": "1/MTI4ODY=/Vbg1N9BP9utwPYnEV50CVQ==",
+    "verify_token": "Qht1plS3n6k9DT3Q",
+    "encrypt_token": "QN5oRsNF42D",
+    "webhook_port": 50000,
+    "using_ws": true
+}
