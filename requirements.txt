@@ -1,4 +1,2 @@
 khl.py
-simplejson
-requests
-datetime
+Requests==2.31.0
