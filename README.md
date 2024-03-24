@@ -8,3 +8,10 @@
 /epic_start - 该文字频道订阅自动推送
 
 /epic_stop - 取消订阅
+
+## docker
+
+```bash
+docker build -t oldk:v1 .
+docker save oldk:v1 > oldk.tar
+```
