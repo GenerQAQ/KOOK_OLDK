@@ -69,6 +69,7 @@ def update_epic_data():
 
     global_epic_data.append(now_frees)
     global_epic_data.append(coming_frees)
+    print("epic data updated")
 
 def update_epic_card():
     """更新epic卡片"""
@@ -106,35 +107,11 @@ def update_epic_card():
                 size=item['size'],
             )
         )
+    print("epic card updated")
 
 async def send_channel(bot: Bot, channel_id: str):
     """主动发送消息"""
     global global_epic_card
     ch = await bot.client.fetch_public_channel(channel_id)
     await ch.send(global_epic_card)
-
-def add_channel_id(channel_id: str):
-    """添加频道ID至配置文件"""
-    # 获取当前脚本所在的目录路径
-    current_dir = os.path.dirname(__file__)
-    # 使用相对路径拼接文件路径
-    file_path = os.path.join(current_dir, './config/channels.json')
-    with open(file_path, 'r') as f:
-        data = json.load(f)
-    if channel_id not in data['channels']:
-        data['channels'].append(channel_id)
-    with open(file_path, 'w') as f:
-        json.dump(data, f, indent=4)
-
-def remove_channel_id(channel_id: str):
-    """移除频道ID至配置文件"""
-    # 获取当前脚本所在的目录路径
-    current_dir = os.path.dirname(__file__)
-    # 使用相对路径拼接文件路径
-    file_path = os.path.join(current_dir, './config/channels.json')
-    with open(file_path, 'r') as f:
-        data = json.load(f)
-    if channel_id in data['channels']:
-        data['channels'].remove(channel_id)
-    with open(file_path, 'w') as f:
-        json.dump(data, f, indent=4)
+    print(f"epic card sent {channel_id}")

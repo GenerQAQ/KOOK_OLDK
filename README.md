@@ -12,6 +12,6 @@
 ## docker
 
 ```bash
-docker build -t oldk:v1 .
-docker save oldk:v1 > oldk.tar
+docker build -t oldk .
+docker save oldk > oldk.tar
 ```
