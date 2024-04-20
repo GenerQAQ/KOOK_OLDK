@@ -12,6 +12,8 @@ global_epic_card = CardMessage()
 
 global_epic_jump_first = 'https://store.epicgames.com/zh-CN/p/'
 
+global_epic_jump_bundle_first = 'https://store.epicgames.com/zh-CN/bundles/'
+
 def update_epic_data():
     """更新epic数据到全局变量"""
     global global_epic_data
@@ -41,6 +43,12 @@ def update_epic_data():
         if (item['promotions'] == None):
             continue
 
+        link = ''
+        if item['offerType'] == 'BUNDLE':
+            link = global_epic_jump_bundle_first + item['urlSlug']
+        else:
+            link = global_epic_jump_first + item['catalogNs']['mappings'][0]['pageSlug']
+
         # 当前免费
         if (len(item['promotions']['promotionalOffers'])) and (item['price']['totalPrice']['discountPrice'] == 0):
             now_frees['games'].append({
@@ -50,7 +58,7 @@ def update_epic_data():
                 'start_time': datetime.strptime(item['promotions']['promotionalOffers'][0]['promotionalOffers'][0]['startDate'], "%Y-%m-%dT%H:%M:%S.%fZ") + timedelta(hours=8),
                 'end_time': datetime.strptime(item['promotions']['promotionalOffers'][0]['promotionalOffers'][0]['endDate'], "%Y-%m-%dT%H:%M:%S.%fZ") + timedelta(hours=8),
                 'type': item['offerType'],
-                'link': global_epic_jump_first + item['catalogNs']['mappings'][0]['pageSlug']
+                'link': link
             })
             continue
 
@@ -63,7 +71,7 @@ def update_epic_data():
                 'start_time': datetime.strptime(item['promotions']['upcomingPromotionalOffers'][0]['promotionalOffers'][0]['startDate'], "%Y-%m-%dT%H:%M:%S.%fZ") + timedelta(hours=8),
                 'end_time': datetime.strptime(item['promotions']['upcomingPromotionalOffers'][0]['promotionalOffers'][0]['endDate'], "%Y-%m-%dT%H:%M:%S.%fZ") + timedelta(hours=8),
                 'type': item['offerType'],
-                'link': global_epic_jump_first + item['catalogNs']['mappings'][0]['pageSlug']
+                'link': link
             })
             continue
 
