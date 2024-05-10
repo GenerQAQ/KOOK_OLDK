@@ -44,10 +44,10 @@ def update_epic_data():
             continue
 
         link = ''
-        if item['offerType'] == 'BUNDLE':
-            link = global_epic_jump_bundle_first + item['urlSlug']
-        else:
+        try:
             link = global_epic_jump_first + item['catalogNs']['mappings'][0]['pageSlug']
+        except:
+            link = global_epic_jump_bundle_first + item['urlSlug']
 
         # 当前免费
         if (len(item['promotions']['promotionalOffers'])) and (item['price']['totalPrice']['discountPrice'] == 0):
@@ -63,7 +63,7 @@ def update_epic_data():
             continue
 
         # 即将推出
-        if (len(item['promotions']['upcomingPromotionalOffers'])):
+        if (len(item['promotions']['upcomingPromotionalOffers']) and item['promotions']['upcomingPromotionalOffers'][0]['promotionalOffers'][0]['discountSetting']['discountPercentage'] == 0):
             coming_frees['games'].append({
                 'name': item['title'],
                 'img': item['keyImages'][0]['url'],
