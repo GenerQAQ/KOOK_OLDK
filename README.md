@@ -14,4 +14,5 @@
 ```bash
 docker build -t oldk .
 docker save oldk > oldk.tar
+scp ./oldk.tar remote_username@remote_ip:remote_folder
 ```
